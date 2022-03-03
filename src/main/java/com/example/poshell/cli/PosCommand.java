@@ -1,10 +1,13 @@
 package com.example.poshell.cli;
 
 import com.example.poshell.biz.PosService;
+import com.example.poshell.model.Cart;
 import com.example.poshell.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+
+import javax.validation.constraints.DecimalMin;
 
 @ShellComponent
 public class PosCommand {
@@ -32,8 +35,34 @@ public class PosCommand {
     }
 
     @ShellMethod(value = "Add a Product to Cart", key = "a")
-    public String addToCart(String productId, int amount) {
+    public String addToCart(String productId, @DecimalMin(value = "1") int amount) {
         if (posService.add(productId, amount)) {
+            return posService.getCart().toString();
+        }
+        return "ERROR";
+    }
+
+    @ShellMethod(value = "Print Cart", key = "pc")
+    public String printCart() {
+        Cart cart = posService.getCart();
+        if (cart != null)
+            return cart.toString();
+        else return "ERROR: NO CART!";
+    }
+
+    @ShellMethod(value = "Check Out", key = "c")
+    public String checkOut() {
+        Cart cart = posService.getCart();
+        if (cart != null) {
+            double res = posService.checkout(posService.getCart());
+            this.newCart();
+            return String.format("Checking out...\nTotal: %.2f\nCheck out successfully.\nCart is empty now.", res);
+        } else return "ERROR: NO CART!";
+    }
+
+    @ShellMethod(value = "Modify Item Amount in Cart", key = "m")
+    public String modifyItemAmountInCart(String productId, @DecimalMin(value = "0") int amount) {
+        if (posService.modify(productId, amount)) {
             return posService.getCart().toString();
         }
         return "ERROR";
