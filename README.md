@@ -36,7 +36,7 @@ Implementing a PosDB with real database is very much welcome.
 
 Please elaborate your understanding in layered systems via this homework in your README.md.
 
-##编译说明
+## 编译说明  
 
 为了支持```asciinema```工具，demo是在`Docker`中运行的。以下简要介绍如何生成这个demo。
 
@@ -49,7 +49,7 @@ docker build -t aw02:v1 .
 docker run -ti aw02:v1 
 ```
 
-##理解
+## 理解  
 
 简单来讲，这是一个使用`spring-boot`框架的命令行应用程序。整体上而言，这个程序体现了三层设计。
 
